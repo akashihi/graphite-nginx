@@ -16,6 +16,7 @@
 package main
 
 import (
+	"github.com/davecgh/go-spew/spew"
 	"time"
 )
 
@@ -28,7 +29,7 @@ func main() {
 	log.Info("Starting graphite-nginx...")
 
 	var configuration = config()
-
+	spew.Dump(configuration)
 	for {
 		for indx, url := range configuration.StatusUrl {
 			var page, err = getPage(url)
@@ -37,7 +38,7 @@ func main() {
 			}
 			var status = parse(page)
 
-			sendMetrics(status, indx, len(configuration.StatusUrl) == 1, configuration)
+			sendMetrics(status, indx, len(configuration.StatusUrl) != 1, configuration)
 
 		}
 		wait(configuration)
