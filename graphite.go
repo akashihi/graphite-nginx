@@ -20,17 +20,23 @@ import (
 	"github.com/marpaia/graphite-golang"
 )
 
-func sendMetrics(status Status, config Configuration) {
+func sendMetrics(status Status, index int, useIndex bool, config Configuration) {
 	var Graphite, err = graphite.NewGraphite(config.MetricsHost, config.MetricsPort)
 	if err != nil {
 		log.Error("Can't connect to graphite collector: %v", err)
 		return
 	}
-	Graphite.SimpleSend(fmt.Sprint(config.MetricsPrefix, ".nginx.active"), status.Active)
-	Graphite.SimpleSend(fmt.Sprint(config.MetricsPrefix, ".nginx.accept"), status.Accept)
-	Graphite.SimpleSend(fmt.Sprint(config.MetricsPrefix, ".nginx.handle"), status.Handle)
-	Graphite.SimpleSend(fmt.Sprint(config.MetricsPrefix, ".nginx.request"), status.Request)
-	Graphite.SimpleSend(fmt.Sprint(config.MetricsPrefix, ".nginx.read"), status.Read)
-	Graphite.SimpleSend(fmt.Sprint(config.MetricsPrefix, ".nginx.write"), status.Write)
-	Graphite.SimpleSend(fmt.Sprint(config.MetricsPrefix, ".nginx.wait"), status.Wait)
+
+	var nginxSuffix = "."
+	if useIndex {
+		nginxSuffix = fmt.Sprintf(".%d.", index)
+	}
+
+	Graphite.SimpleSend(fmt.Sprint(config.MetricsPrefix, ".nginx", nginxSuffix, "active"), status.Active)
+	Graphite.SimpleSend(fmt.Sprint(config.MetricsPrefix, ".nginx", nginxSuffix, "accept"), status.Accept)
+	Graphite.SimpleSend(fmt.Sprint(config.MetricsPrefix, ".nginx", nginxSuffix, "handle"), status.Handle)
+	Graphite.SimpleSend(fmt.Sprint(config.MetricsPrefix, ".nginx", nginxSuffix, "request"), status.Request)
+	Graphite.SimpleSend(fmt.Sprint(config.MetricsPrefix, ".nginx", nginxSuffix, "read"), status.Read)
+	Graphite.SimpleSend(fmt.Sprint(config.MetricsPrefix, ".nginx", nginxSuffix, "write"), status.Write)
+	Graphite.SimpleSend(fmt.Sprint(config.MetricsPrefix, ".nginx", nginxSuffix, "wait"), status.Wait)
 }

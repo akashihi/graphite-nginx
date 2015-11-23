@@ -30,14 +30,16 @@ func main() {
 	var configuration = config()
 
 	for {
-		var page, err = getPage(configuration.StatusUrl)
-		if err != nil {
-			wait(configuration)
-			continue
-		}
-		var status = parse(page)
+		for indx, url := range configuration.StatusUrl {
+			var page, err = getPage(url)
+			if err != nil {
+				continue
+			}
+			var status = parse(page)
 
-		sendMetrics(status, configuration)
+			sendMetrics(status, indx, len(configuration.StatusUrl) == 1, configuration)
+
+		}
 		wait(configuration)
 	}
 }

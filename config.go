@@ -17,10 +17,11 @@ package main
 
 import (
 	"flag"
+	"strings"
 )
 
 type Configuration struct {
-	StatusUrl     string
+	StatusUrl     []string
 	Period        int
 	MetricsHost   string
 	MetricsPort   int
@@ -28,7 +29,7 @@ type Configuration struct {
 }
 
 func config() Configuration {
-	statusUrlPtr := flag.String("url", "http://127.0.0.1/server_status", "Url of the nginx status page")
+	statusUrlPtr := flag.String("url", "http://127.0.0.1/server_status", "Url(s) of the nginx status page. If you have more than one, separate them by comma")
 	periodPtr := flag.Int("period", 60, "Period of status page polling in seconds")
 	metricsHostPtr := flag.String("metrics-host", "127.0.0.1", "Ip address of the Graphite collector host")
 	metricsPortPtr := flag.Int("metrics-port", 2003, "Port of the Graphite collector host")
@@ -36,5 +37,5 @@ func config() Configuration {
 
 	flag.Parse()
 
-	return Configuration{StatusUrl: *statusUrlPtr, Period: *periodPtr, MetricsHost: *metricsHostPtr, MetricsPort: *metricsPortPtr, MetricsPrefix: *metricsPrefixPtr}
+	return Configuration{StatusUrl: strings.Split(*statusUrlPtr, ","), Period: *periodPtr, MetricsHost: *metricsHostPtr, MetricsPort: *metricsPortPtr, MetricsPrefix: *metricsPrefixPtr}
 }
