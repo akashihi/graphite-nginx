@@ -28,7 +28,7 @@ func main() {
 	log.Info("Starting graphite-nginx...")
 
 	var configuration = config()
-]	for {
+	for {
 		for indx, url := range configuration.StatusUrl {
 			var page, err = getPage(url)
 			if err != nil {
